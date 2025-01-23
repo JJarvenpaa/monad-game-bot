@@ -1,9 +1,5 @@
 import fetch from 'node-fetch';
 
-
-//TODO: 1. Create game with POST request
-//      2. Use a secret file with authentication code 
-
 async function createGameSession()  {
     //TODO: make a specific error
     if(process.env.TOKEN == undefined) throw new Error("No token found, remember to add it to .env file");
