@@ -26,19 +26,25 @@ async function startGame() {
     let money = player.money
     let cardValue = gameData.status.money
     let cardsArray = player.cards
-
+    let nextCard = gameData.status.card
     let takeCard = false
 
-    // function to check if card is a set, take it if money
-    if(money >= cardValue && checkSetCard(cardsArray, gameData.status.card)) {
+    if(money == 0) {
         takeCard = true;
-    } 
-    
+    }
+
+    else if(money >= cardValue && checkSetCard(cardsArray, nextCard)) {
+        takeCard = true;
+
+    } else if(money > 0 && nextCard <= 16) {
+        //TODO: if not set card and has money, take card if card is smaller or equal to than half of the highest card
+        takeCard = true
+    }    
 }
 
+//check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
 const checkSetCard = (cardsArray, nextCard) =>  {
     let takeCard = false
-    //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
     //For testing only 
     //cardsArray = [25, 1, 3, 4]
     //nextCard = 2
