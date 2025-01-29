@@ -1,6 +1,4 @@
-import fetch from 'node-fetch';
 import sendRequest from './requestService.js';
-
 
 async function startGame() {
 
