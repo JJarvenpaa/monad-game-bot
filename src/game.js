@@ -3,6 +3,7 @@ import sendRequest from './requestService.js';
 async function startGame() {
 
     let gameData = await sendRequest()
+    
     console.log(gameData.gameId)
     console.log(gameData.status)
     //I'm always the first player
@@ -31,7 +32,12 @@ async function startGame() {
         takeCard = false
     }
 
-    //TODO: send take request to API
+    let requestBody = JSON.stringify({ takeCard: takeCard })
+
+    //Send action request to API
+    gameData = await sendRequest('https://koodipahkina.monad.fi/api/game/' + gameData.gameId + '/action', requestBody )
+    console.log(gameData.status)
+
 }
 
 //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false

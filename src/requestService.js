@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 
-export default async function sendRequest(url = 'https://koodipahkina.monad.fi/api/game', method = 'POST', body = undefined) {
+export default async function sendRequest(url = 'https://koodipahkina.monad.fi/api/game', body = undefined, method = 'POST') {
+    
     if(process.env.TOKEN == undefined) throw new Error("No token found, remember to add it to .env file");
     
     const response = await fetch(url, {
