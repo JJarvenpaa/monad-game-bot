@@ -18,6 +18,7 @@ async function createGameSession()  {
 }
 
 async function startGame() {
+
     let gameData = await createGameSession()
     console.log(gameData.gameId)
     console.log(gameData.status)
@@ -31,15 +32,23 @@ async function startGame() {
 
     if(money == 0) {
         takeCard = true;
-    }
-
-    else if(money >= cardValue && checkSetCard(cardsArray, nextCard)) {
+        
+    } else if(money >= cardValue && checkSetCard(cardsArray, nextCard)) {
         takeCard = true;
 
-    } else if(money > 0 && nextCard <= 16) {
-        //TODO: if not set card and has money, take card if card is smaller or equal to than half of the highest card
+    } else if(money >= cardValue && nextCard <= 16) {
+        //if not set card and has money, take card if card is smaller or equal to than half of the highest card
         takeCard = true
-    }    
+        
+    } else if(money >= cardValue && money < 8 && cardValue > 4) {
+        //if money is < 8 and cardValue is > 4, take it to keep money situation good
+        takeCard = true
+
+    } else {
+        takeCard = false
+    }
+
+    //TODO: send take request to API
 }
 
 //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
