@@ -4,7 +4,11 @@ async function startGame() {
 
     let gameData = await sendRequest()
 
-    console.log(gameData.gameId)
+    return gameData
+}
+
+async function playRound(gameData, gameId) {
+    
     console.log(gameData.status)
     let player = gameData.status.players.find(({ name }) => name === 'JJarvenpaa')
     let money = player.money
@@ -34,9 +38,11 @@ async function startGame() {
     let requestBody = JSON.stringify({ takeCard: takeCard })
 
     //Send action request to API
-    gameData = await sendRequest('https://koodipahkina.monad.fi/api/game/' + gameData.gameId + '/action', requestBody )
+
+    gameData = await sendRequest('https://koodipahkina.monad.fi/api/game/' + gameId + '/action', requestBody )
     console.log(gameData.status)
 
+    return gameData
 }
 
 //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
@@ -55,4 +61,11 @@ const checkSetCard = (cardsArray, nextCard) =>  {
     return takeCard
 }
 
-startGame()
+let gameData = await startGame()
+const gameId = gameData.gameId
+
+while(gameData.status.finished === false) {
+
+    gameData = await playRound(gameData, gameId)
+    console.log(gameData)
+}
