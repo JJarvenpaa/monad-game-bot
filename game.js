@@ -1,25 +1,10 @@
 import fetch from 'node-fetch';
+import sendRequest from './requestService.js';
 
-async function createGameSession()  {
-    //TODO: make a specific error
-    if(process.env.TOKEN == undefined) throw new Error("No token found, remember to add it to .env file");
-    
-    const response = await fetch('https://koodipahkina.monad.fi/api/game', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + process.env.TOKEN,
-        },
-    });
-    //TODO: error handling
-    const data = await response.json()
-
-    return data
-}
 
 async function startGame() {
 
-    let gameData = await createGameSession()
+    let gameData = await sendRequest()
     console.log(gameData.gameId)
     console.log(gameData.status)
     //I'm always the first player
@@ -53,6 +38,7 @@ async function startGame() {
 
 //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
 const checkSetCard = (cardsArray, nextCard) =>  {
+    //TODO: return if cardsArray empty
     let takeCard = false
     //For testing only 
     //cardsArray = [25, 1, 3, 4]
