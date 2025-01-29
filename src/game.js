@@ -3,11 +3,10 @@ import sendRequest from './requestService.js';
 async function startGame() {
 
     let gameData = await sendRequest()
-    
+
     console.log(gameData.gameId)
     console.log(gameData.status)
-    //I'm always the first player
-    let player = gameData.status.players[0]
+    let player = gameData.status.players.find(({ name }) => name === 'JJarvenpaa')
     let money = player.money
     let cardValue = gameData.status.money
     let cardsArray = player.cards
