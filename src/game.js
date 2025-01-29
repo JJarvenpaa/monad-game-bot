@@ -41,8 +41,9 @@ async function startGame() {
 
 //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
 const checkSetCard = (cardsArray, nextCard) =>  {
-    //TODO: return if cardsArray empty
     let takeCard = false
+
+    if(cardsArray.length === 0) { return takeCard } 
     //For testing only 
     //cardsArray = [25, 1, 3, 4]
     //nextCard = 2
