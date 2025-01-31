@@ -7,7 +7,7 @@ async function startGame() {
     return gameData
 }
 
-async function playRound(gameData, gameId) {
+async function playTurn(gameData, gameId) {
     
     console.log(gameData.status)
     let takeCard = false
@@ -17,22 +17,19 @@ async function playRound(gameData, gameId) {
     let cardsArray = player.cards
     let nextCard = gameData.status.card
 
-    let moneyBuffer = 4 //How much money should be left after taking a card
-    let moneyBufferOnSet = 1 //How much money should be left after taking a set card
 
-    
+    //TODO: idea to keep money situation good: if cardValue >= 12, take it. It's a good amount of money
+    // This way we can remove moneyBuffer, because I think that makes us go 0 money
     if(money == 0) {
         takeCard = true;
         
-    } else if(money - moneyBufferOnSet >= cardValue && checkSetCard(cardsArray, nextCard)) {
+    } else if(gameData.status.cardsLeft == 24 && cardValue >= 3) {
+        takeCard = firstRoundPlay(nextCard)
+
+    } else if(money >= cardValue && checkSetCard(cardsArray, nextCard)) {
         takeCard = true;
 
-    } else if(money - moneyBuffer >= cardValue && nextCard <= 16) {
-        //if not set card and has money, take card if card is smaller or equal to than half of the highest card
-        //TODO: maybe this only needs to happen on the first card? It seems that this rule makes us poor
-        takeCard = true
-        
-    } else if(money - moneyBuffer >= cardValue && money < 8 && cardValue > 4) {
+    } else if(money >= cardValue && money <= 7 && cardValue >= 3) {
         //take it to keep money situation good
         takeCard = true
 
@@ -51,6 +48,16 @@ async function playRound(gameData, gameId) {
     return gameData
 }
 
+//if not set card and has money, take card if card is smaller or equal to than half of the highest card (36)
+const firstRoundPlay = (nextCard) => {
+
+    let takeCard = false
+
+    if(nextCard <= 16) { takeCard = true }
+
+    return takeCard
+}
+
 //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
 const checkSetCard = (cardsArray, nextCard) =>  {
     let takeCard = false
@@ -60,8 +67,8 @@ const checkSetCard = (cardsArray, nextCard) =>  {
     //cardsArray = [25, 1, 3, 4]
     //nextCard = 2
     
-    cardsArray.forEach(card => {
-        if(nextCard + 1 == card || nextCard - 1 == card) takeCard = true 
+    cardsArray.forEach(currentCard => {
+        if(currentCard + 1 == nextCard || currentCard - 1 == nextCard) takeCard = true 
     });
 
     return takeCard
@@ -76,6 +83,6 @@ const gameId = gameData.gameId
 
 while(gameData.status.finished === false) {
     await sleep(1000)
-    gameData = await playRound(gameData, gameId)
+    gameData = await playTurn(gameData, gameId)
     console.log(gameData)
 }
