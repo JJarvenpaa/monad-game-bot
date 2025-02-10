@@ -17,8 +17,7 @@ async function playTurn(gameData, gameId) {
     let cardsArray = player.cards
     let tableCard = gameData.status.card
 
-
-    //Game 11 is used on current code
+    //Game 13 is used on current code
     if(money == 0) {
         takeCard = true;
         
@@ -65,7 +64,7 @@ const checkSetCard = (cardsArray, tableCard) =>  {
     if(cardsArray.length === 0) { return false } 
     //For testing only 
     //cardsArray = [25, 1, 3, 4]
-    //tableCard = 24
+    //tableCard = 2
     
     //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
     function IsSetCard(card) {
@@ -76,6 +75,8 @@ const checkSetCard = (cardsArray, tableCard) =>  {
         }
     }
 
+    //TODO: in the previous game we had card 28 and tableCard was 29, why did we not take it when cardValue was 0 and our money was 3?
+    //It happened again in game 13 and again when the new round was beginning, maybe the API returns something differently in the begnning of the round, gotta check next time
     if(cardsArray.some(IsSetCard)) { 
         return true 
     } else {
