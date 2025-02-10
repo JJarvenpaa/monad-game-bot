@@ -9,7 +9,6 @@ async function startGame() {
 
 
 async function playTurn(gameData, gameId) {
-    //console.log(gameData.status)
     let takeCard = false
     let player = gameData.status.players.find(({ name }) => name === 'JJarvenpaa')
     let money = player.money
@@ -17,7 +16,7 @@ async function playTurn(gameData, gameId) {
     let cardsArray = player.cards
     let tableCard = gameData.status.card
 
-    //Game 13 is used on current code
+    //Game 14 is used on current code
     if(money == 0) {
         takeCard = true;
         
@@ -66,18 +65,15 @@ const checkSetCard = (cardsArray, tableCard) =>  {
     //cardsArray = [25, 1, 3, 4]
     //tableCard = 2
     
-    //check cardsArray and if one of the cards is offset 1 to the current card return true, otherwise false
-    function IsSetCard(card) {
-        if(card + 1 == tableCard || card - 1 == tableCard) {
-            return true
-        } else {
-            return false
-        }
-    }
+    const setCard = (card) => {
+        let isSetCard = false
+        if(card[0] + 1 == tableCard || card[0] - 1 == tableCard) { isSetCard = true }
 
-    //TODO: in the previous game we had card 28 and tableCard was 29, why did we not take it when cardValue was 0 and our money was 3?
-    //It happened again in game 13 and again when the new round was beginning, maybe the API returns something differently in the begnning of the round, gotta check next time
-    if(cardsArray.some(IsSetCard)) { 
+        return isSetCard 
+   }
+
+   
+    if(cardsArray.some(setCard)) { 
         return true 
     } else {
         return false
