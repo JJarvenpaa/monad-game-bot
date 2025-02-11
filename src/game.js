@@ -37,25 +37,24 @@ async function playTurn(gameData, gameId) {
     let cardsLeft = gameData.status.cardsLeft
 
     let currentWinner = getCurrentWinner(gameData.status.players)
-    //Previous game was 28
-    //Next game is 34
+    //Previous game was 41
+    //Next game is 42
     //We can't track previous game in game order because the gamelisting site has a bug that makes the games show in different order than games played
     //Take a screenshot every time to find out the latest game...
     if(money == 0) {
         takeCard = true;
         
-    } else if(cardsLeft == 24 && cardValue >= 3) {
+    } 
+    else if(cardsLeft == 24 && cardValue >= 3) {
         takeCard = firstRoundPlay(tableCard, cardValue)
 
-    } else if(isSetCard(cardsArray, tableCard && cardValue >= 2)) {
-        const randNum = getRandomNum() 
-        if(tableCard <= 16 && randNum > 0.1) { //Simulate 90% chance of taking card
-            takeCard = true  
- 
-        } else if(tableCard <= 25 && randNum > 0.3) { takeCard = true } //Simulate 70% chance of taking card 
-    
-    } else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner.cards, tableCard && money > 10 && cardValue >= 3)) {
-        //Stealing is only viable if we have a good situation going, otherwise this will rob our money
+    } else if(cardValue >= 12 && tableCard < 12) { //Will reduce points, good to take
+        takeCard = true 
+
+    } else if(isSetCard(cardsArray, tableCard) && cardValue >= 1) {
+        takeCard = true
+
+    } else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner.cards, tableCard) && cardValue >= 1) {
         const randNum = getRandomNum() 
         if(tableCard <= 16 && randNum > 0.4) { //Simulate 60% chance of taking card
             takeCard = true  
@@ -66,10 +65,10 @@ async function playTurn(gameData, gameId) {
     //TODO: are we still getting too poor?
     else if(money <= 10 && cardValue >= 3) {
         const randNum = getRandomNum() 
-        if(tableCard <= 16 && randNum > 0.2) { //Simulate 80% chance of taking card
+        if(tableCard <= 16 && randNum > 0.3) { //Simulate 70% chance of taking card
            takeCard = true  
 
-        } else if(tableCard <= 25 && randNum > 0.7) { takeCard = true } //Simulate 30% chance of taking card 
+        } else if(tableCard <= 25 && randNum > 0.5) { takeCard = true } //Simulate 50% chance of taking card 
     }
 
     //Send action request to API
