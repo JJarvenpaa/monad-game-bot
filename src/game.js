@@ -35,22 +35,22 @@ async function playTurn(gameData, gameId) {
     let cardsArray = player.cards
     let tableCard = gameData.status.card
 
-    //Game 17 is used on current code
+    //Game 25 is used on current code
     if(money == 0) {
         takeCard = true;
         
     } else if(gameData.status.cardsLeft == 24 && cardValue >= 3) {
         takeCard = firstRoundPlay(tableCard, cardValue)
 
-    } else if(money >= cardValue && isSetCard(cardsArray, tableCard)) {
+    } else if(isSetCard(cardsArray, tableCard)) {
         takeCard = true;
 
-    } else if(money >= cardValue && money <= 7 && cardValue >= 3) {
+    } else if(money <= 4 && cardValue >= 3) {
         const randNum = Math.ceil(Math.random() * 100) / 100 //round decimals up
         if(tableCard <= 16 && randNum > 0.2) { //Simulate 80% chance of taking card
            takeCard = true  
 
-        } else if(randNum > 0.5) { takeCard = true } //Simulate 50% chance of taking card 
+        } else if(randNum > 0.4) { takeCard = true } //Simulate 60% chance of taking card 
     }
 
     //TODO: enhance bot logic, it takes way too many cards and is poor all the time
@@ -88,14 +88,12 @@ const isSetCard = (cardsArray, tableCard) =>  {
         if(card[0] + 1 == tableCard || card[0] - 1 == tableCard) { isSetCard = true }
 
         return isSetCard 
-   }
+    }
 
-   
     if(cardsArray.some(setCard)) { 
         return true 
-    } else {
-        return false
-    }
+        
+    } else { return false }
 }
 
 function sleep(ms) {
