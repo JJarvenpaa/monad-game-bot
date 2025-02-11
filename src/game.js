@@ -29,24 +29,32 @@ async function startGame() {
 
 async function playTurn(gameData, gameId) {
     let takeCard = false
-    let player = gameData.status.players.find(({ name }) => name === 'JJarvenpaa')
+    let player = gameData.status.players.find(({ name }) => name == 'JJarvenpaa')
     let money = player.money
     let cardValue = gameData.status.money
     let cardsArray = player.cards
     let tableCard = gameData.status.card
+    let cardsLeft = gameData.status.cardsLeft
+    let currentWinner = ''
 
-    //Previous game was 20
-    //Game 28 is used on current code
-    //We can't track it in game order because the gamelisting site has a bug that makes the games show in different order than games played
+    if(cardsLeft < 24) {
+        currentWinner = getCurrentWinner(gameData.status.players)
+    } 
+    //Previous game was 25
+    //Next game is 29
+    //We can't track previous game in game order because the gamelisting site has a bug that makes the games show in different order than games played
     //Take a screenshot every time to find out the latest game...
     if(money == 0) {
         takeCard = true;
         
-    } else if(gameData.status.cardsLeft == 24 && cardValue >= 3) {
+    } else if(cardsLeft == 24 && cardValue >= 3) {
         takeCard = firstRoundPlay(tableCard, cardValue)
 
     } else if(isSetCard(cardsArray, tableCard)) {
         takeCard = true;
+
+    } else if(stealSetCard(currentWinner)) {
+
 
     } else if(money <= 8 && cardValue >= 3) {
         const randNum = Math.ceil(Math.random() * 100) / 100 //round decimals up
@@ -56,8 +64,6 @@ async function playTurn(gameData, gameId) {
         } else if(tableCard <= 25 && randNum > 0.4) { takeCard = true } //Simulate 60% chance of taking card 
     }
 
-    //TODO: enhance bot logic, it takes way too many cards and is poor all the time
-
     //Send action request to API
     let requestBody = JSON.stringify({ takeCard: takeCard })
     gameData = await sendRequest('https://koodipahkina.monad.fi/api/game/' + gameId + '/action', requestBody )
@@ -66,6 +72,48 @@ async function playTurn(gameData, gameId) {
     return gameData
 }
 
+const getCurrentWinner = (players) => {
+    let pointsMap = getPoints(players)
+    console.log(pointsMap)
+
+    //TODO: What to do when many players have lowest points?
+    return [...pointsMap.entries()].reduce((minPlayer, currentPlayer) => {
+        const [name, points] = currentPlayer;
+
+        if (points < minPlayer[1]) {
+            return currentPlayer;
+        } else {
+            return minPlayer;
+        }
+    })[0]
+}
+
+const getPoints = (players, pointsMap = new Map()) => {
+    //Calculate all player points
+    for(const p of players) {
+        let playerPoints = 0
+        let playerCardsArr = p.cards
+
+        if(playerCardsArr.length == 0) {
+            playerPoints -= p.money
+            pointsMap.set(p.name, playerPoints)
+            continue
+        }
+
+        for(const card of playerCardsArr) {
+            playerPoints += card[0]
+        }
+
+        playerPoints -= p.money 
+        pointsMap.set(p.name, playerPoints)
+    }
+
+    return pointsMap
+}
+
+const stealSetCard = (currentWinner) => {
+    //TODO: 
+}
 
 const firstRoundPlay = (tableCard, cardValue) => {
     let takeCard = false
@@ -98,7 +146,7 @@ const isSetCard = (cardsArray, tableCard) =>  {
     } else { return false }
 }
 
-function sleep(ms) {
+const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
