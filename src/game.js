@@ -2,6 +2,25 @@ import sendRequest from './requestService.js';
 
 
 async function startGame() {
+    /*
+    For testing random with probability
+    let take80Counter = 0
+    let take50Counter = 0
+
+    for(let i = 0; i < 10000; i++) {
+        let test = Math.random() * 100
+        let randNum = Math.ceil(test) / 100
+
+        if(randNum > 0.5) { 
+            take50Counter++ 
+        } 
+        
+        if(randNum > 0.2) {
+            take80Counter++
+        }
+    }
+    */
+
     let gameData = await sendRequest()
 
     return gameData
@@ -16,23 +35,22 @@ async function playTurn(gameData, gameId) {
     let cardsArray = player.cards
     let tableCard = gameData.status.card
 
-    //Game 14 is used on current code
+    //Game 17 is used on current code
     if(money == 0) {
         takeCard = true;
         
     } else if(gameData.status.cardsLeft == 24 && cardValue >= 3) {
         takeCard = firstRoundPlay(tableCard, cardValue)
 
-    } else if(money >= cardValue && checkSetCard(cardsArray, tableCard)) {
+    } else if(money >= cardValue && isSetCard(cardsArray, tableCard)) {
         takeCard = true;
 
     } else if(money >= cardValue && money <= 7 && cardValue >= 3) {
-        //take it to keep money situation good
-        //We take too many cards now, I think we need to implement some probability based decision here now
-        takeCard = true
+        const randNum = Math.ceil(Math.random() * 100) / 100 //round decimals up
+        if(tableCard <= 16 && randNum > 0.2) { //Simulate 80% chance of taking card
+           takeCard = true  
 
-    } else {
-        takeCard = false
+        } else if(randNum > 0.5) { takeCard = true } //Simulate 50% chance of taking card 
     }
 
     //TODO: enhance bot logic, it takes way too many cards and is poor all the time
@@ -59,7 +77,7 @@ const firstRoundPlay = (tableCard, cardValue) => {
 }
 
 
-const checkSetCard = (cardsArray, tableCard) =>  {
+const isSetCard = (cardsArray, tableCard) =>  {
     if(cardsArray.length === 0) { return false } 
     //For testing only 
     //cardsArray = [25, 1, 3, 4]
