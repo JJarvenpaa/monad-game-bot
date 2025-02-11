@@ -53,8 +53,8 @@ async function playTurn(gameData, gameId) {
     } else if(isSetCard(cardsArray, tableCard)) {
         takeCard = true;
 
-    } else if(stealSetCard(currentWinner)) {
-
+    } else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner, tableCard)) {
+        takeCard = true
 
     } else if(money <= 8 && cardValue >= 3) {
         const randNum = Math.ceil(Math.random() * 100) / 100 //round decimals up
@@ -77,13 +77,13 @@ const getCurrentWinner = (players) => {
     console.log(pointsMap)
 
     //TODO: What to do when many players have lowest points?
-    return [...pointsMap.entries()].reduce((minPlayer, currentPlayer) => {
-        const [name, points] = currentPlayer;
+    return [...pointsMap.entries()].reduce((minPointsPlayer, currentPlayer) => {
+        const [playerObj, points] = currentPlayer;
 
-        if (points < minPlayer[1]) {
+        if (points < minPointsPlayer[1]) {
             return currentPlayer;
         } else {
-            return minPlayer;
+            return minPointsPlayer;
         }
     })[0]
 }
@@ -96,7 +96,7 @@ const getPoints = (players, pointsMap = new Map()) => {
 
         if(playerCardsArr.length == 0) {
             playerPoints -= p.money
-            pointsMap.set(p.name, playerPoints)
+            pointsMap.set(p, playerPoints)
             continue
         }
 
@@ -105,14 +105,16 @@ const getPoints = (players, pointsMap = new Map()) => {
         }
 
         playerPoints -= p.money 
-        pointsMap.set(p.name, playerPoints)
+        pointsMap.set(p, playerPoints)
     }
 
     return pointsMap
 }
 
-const stealSetCard = (currentWinner) => {
-    //TODO: 
+const stealSetCard = (currentWinner, tableCard) => {
+    let steal = false
+    //if(isSetCard(currentWinner))
+
 }
 
 const firstRoundPlay = (tableCard, cardValue) => {
