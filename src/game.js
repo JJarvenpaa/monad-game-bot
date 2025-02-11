@@ -35,11 +35,8 @@ async function playTurn(gameData, gameId) {
     let cardsArray = player.cards
     let tableCard = gameData.status.card
     let cardsLeft = gameData.status.cardsLeft
-    let currentWinner = ''
 
-    if(cardsLeft < 24) {
-        currentWinner = getCurrentWinner(gameData.status.players)
-    } 
+    let currentWinner = getCurrentWinner(gameData.status.players)
     //Previous game was 25
     //Next game is 29
     //We can't track previous game in game order because the gamelisting site has a bug that makes the games show in different order than games played
@@ -52,12 +49,18 @@ async function playTurn(gameData, gameId) {
 
     } else if(isSetCard(cardsArray, tableCard)) {
         takeCard = true;
+    
+    } else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner.cards, tableCard)) {
+        const randNum = getRandomNum() 
+        if(tableCard <= 16 && randNum > 0.2) { //Simulate 80% chance of taking card
+            takeCard = true  
+ 
+        } else if(tableCard <= 25 && randNum > 0.6) { takeCard = true } //Simulate 40% chance of taking card 
 
-    } else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner, tableCard)) {
-        takeCard = true
-
-    } else if(money <= 8 && cardValue >= 3) {
-        const randNum = Math.ceil(Math.random() * 100) / 100 //round decimals up
+    } 
+    //TODO: are we still getting too poor?
+    else if(money <= 8 && cardValue >= 3) {
+        const randNum = getRandomNum() 
         if(tableCard <= 16 && randNum > 0.2) { //Simulate 80% chance of taking card
            takeCard = true  
 
@@ -76,7 +79,7 @@ const getCurrentWinner = (players) => {
     let pointsMap = getPoints(players)
     console.log(pointsMap)
 
-    //TODO: What to do when many players have lowest points?
+    //TODO: What to do when many players have lowest points -> Then we can check which of them has most money?
     return [...pointsMap.entries()].reduce((minPointsPlayer, currentPlayer) => {
         const [playerObj, points] = currentPlayer;
 
@@ -111,10 +114,12 @@ const getPoints = (players, pointsMap = new Map()) => {
     return pointsMap
 }
 
-const stealSetCard = (currentWinner, tableCard) => {
-    let steal = false
-    //if(isSetCard(currentWinner))
-
+const stealSetCard = (winnnerCardsArr, tableCard) => {
+    if(isSetCard(winnnerCardsArr, tableCard)) {
+         return true 
+    } else {
+        return false
+    }
 }
 
 const firstRoundPlay = (tableCard, cardValue) => {
@@ -132,20 +137,30 @@ const firstRoundPlay = (tableCard, cardValue) => {
 const isSetCard = (cardsArray, tableCard) =>  {
     if(cardsArray.length === 0) { return false } 
     //For testing only 
-    //cardsArray = [25, 1, 3, 4]
-    //tableCard = 2
+    //cardsArray = [[25], [1, 2], [30]]
+    //tableCard = 3
     
-    const setCard = (card) => {
-        let isSetCard = false
-        if(card[0] + 1 == tableCard || card[0] - 1 == tableCard) { isSetCard = true }
+    const getSetCard = (cardArr) => {
+        if(cardArr.length > 1) { //Already a set, need to check all of them
+            for(let i = 0; i < cardArr.length; i++) {
+                if(cardArr[i] + 1 == tableCard || cardArr[i] - 1 == tableCard) return true 
+            }
 
-        return isSetCard 
+        } else if(cardArr[0] + 1 == tableCard || cardArr[0] - 1 == tableCard) { 
+            return true 
+        } else {
+            return false
+        }
     }
 
-    if(cardsArray.some(setCard)) { 
+    if(cardsArray.some(getSetCard)) { 
         return true 
 
     } else { return false }
+}
+
+const getRandomNum = () => {
+    return Math.ceil(Math.random() * 100) / 100 //round decimals up
 }
 
 const sleep = (ms) => {
