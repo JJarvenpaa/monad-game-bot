@@ -35,7 +35,10 @@ async function playTurn(gameData, gameId) {
     let cardsArray = player.cards
     let tableCard = gameData.status.card
 
-    //Game 25 is used on current code
+    //Previous game was 20
+    //Game 28 is used on current code
+    //We can't track it in game order because the gamelisting site has a bug that makes the games show in different order than games played
+    //Take a screenshot every time to find out the latest game...
     if(money == 0) {
         takeCard = true;
         
@@ -45,12 +48,12 @@ async function playTurn(gameData, gameId) {
     } else if(isSetCard(cardsArray, tableCard)) {
         takeCard = true;
 
-    } else if(money <= 4 && cardValue >= 3) {
+    } else if(money <= 8 && cardValue >= 3) {
         const randNum = Math.ceil(Math.random() * 100) / 100 //round decimals up
         if(tableCard <= 16 && randNum > 0.2) { //Simulate 80% chance of taking card
            takeCard = true  
 
-        } else if(randNum > 0.4) { takeCard = true } //Simulate 60% chance of taking card 
+        } else if(tableCard <= 25 && randNum > 0.4) { takeCard = true } //Simulate 60% chance of taking card 
     }
 
     //TODO: enhance bot logic, it takes way too many cards and is poor all the time
@@ -64,14 +67,13 @@ async function playTurn(gameData, gameId) {
 }
 
 
-//if not set card and has money, take card if card is smaller or equal to than half of the highest card (36)
 const firstRoundPlay = (tableCard, cardValue) => {
     let takeCard = false
 
     //For testing only
     //tableCard = 20
     //cardValue = 12
-    if(tableCard <= 16 || cardValue >= 11) { takeCard = true }
+    if(tableCard <= 16 || cardValue >= 11) { takeCard = true } //Take high value card for good starting economy or a low point first card
 
     return takeCard
 }
@@ -92,7 +94,7 @@ const isSetCard = (cardsArray, tableCard) =>  {
 
     if(cardsArray.some(setCard)) { 
         return true 
-        
+
     } else { return false }
 }
 
