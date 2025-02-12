@@ -147,7 +147,7 @@ const firstRoundPlay = (tableCard, cardValue) => {
     //For testing only
     //tableCard = 20
     //cardValue = 12
-    if(tableCard <= 16 || cardValue >= 11) { 
+    if(tableCard <= 16 || (cardValue >= 11 && tableCard < 30)) { 
         console.log('Taking card ' + tableCard + ' in first round with value: ' + cardValue)
         takeCard = true 
     } //Take high value card for good starting economy or a low point first card
