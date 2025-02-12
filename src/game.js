@@ -7,8 +7,7 @@ let take80Counter = 0
 let take50Counter = 0
 
 for(let i = 0; i < 10000; i++) {
-    let test = Math.random() * 100
-    let randNum = Math.ceil(test) / 100
+    let randNum = getRandomNum()
 
     if(randNum > 0.5) { 
         take50Counter++ 
@@ -45,7 +44,7 @@ async function playTurn(gameData, gameId) {
     //let currentWinner = getCurrentWinner(gameData.status.players)
     
     if(money == 0) {
-        console.log('Money 0, have to take card : ' + tableCard + ' of value: ' + cardValue)
+        console.log('Money 0, have to take card ' + tableCard + ' of value ' + cardValue)
         takeCard = true;
         
     } 
@@ -57,17 +56,20 @@ async function playTurn(gameData, gameId) {
         const randNum = getRandomNum() 
         if(randNum > highValueCardProb) {
             takeCard = true 
-            console.log('Taking high value card : ' + tableCard + ' with randNum > ' + highValueCardProb + ' And value of : ' + cardValue)
+            console.log('Taking high value card  ' + tableCard + ' with randNum > ' + highValueCardProb + ' And value of ' + cardValue)
         }
 
     } else if(isSetCard(cardsArray, tableCard) && cardValue >= 1 && tableCard < 30) {
-        console.log('Taking a set card : ' + tableCard + ' with value: ' + cardValue)
+        console.log('Taking a set card ' + tableCard + ' with value ' + cardValue)
         takeCard = true
 
-    } /*else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner.cards, tableCard) && cardValue >= 1 && money >=8) {
-        //TODO: It does happen, but it seems it makes our situation worse
+    } 
+
+    /* Leave it for now, but it makes our situation worse like this. Maybe do something else with regarding the current winner?
+    else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner.cards, tableCard) && cardValue >= 1 && money >=8) {
+        //TODO It does happen, but it seems it makes our situation worse
         const randNum = getRandomNum() 
-        if(tableCard <= 16 && randNum > 0.4) { //Simulate 60% chance of taking card
+        if(tableCard <= 16 && randNum > 0.4) { //Simulate 60% chance of taking card           
             console.log('stealing winners set with 60% chance')
             takeCard = true  
  
@@ -75,7 +77,7 @@ async function playTurn(gameData, gameId) {
             console.log('stealing winners set with 40% chance')
             takeCard = true 
             
-        } //Simulate 40% chance of taking card 
+        } //Simulate 40% chance of taking card
 
     }
     */ 
@@ -83,11 +85,11 @@ async function playTurn(gameData, gameId) {
     else if(money <= 10 && cardValue >= 3) {
         const randNum = getRandomNum() 
         if(tableCard <= 16 && randNum > lowCardProb) {
-            console.log('Taking card : ' + tableCard + ' with randNum > ' + lowCardProb + ' And value of : ' + cardValue)
+            console.log('Taking card ' + tableCard + ' with randNum > ' + lowCardProb + ' And value of ' + cardValue)
             takeCard = true  
 
         } else if(tableCard < 30 && randNum > highCardProb) { 
-            console.log('Taking card : ' + tableCard + ' with randNum > ' + highCardProb + ' And value of : ' + cardValue)
+            console.log('Taking card ' + tableCard + ' with randNum > ' + highCardProb + ' And value of ' + cardValue)
             takeCard = true 
         }
     }
@@ -95,7 +97,6 @@ async function playTurn(gameData, gameId) {
     //Send action request to API
     let requestBody = JSON.stringify({ takeCard: takeCard })
     gameData = await sendRequest('https://koodipahkina.monad.fi/api/game/' + gameId + '/action', requestBody )
-    //console.log(gameData.status)
 
     return gameData
 }
@@ -152,10 +153,12 @@ const firstRoundPlay = (tableCard, cardValue) => {
     //For testing only
     //tableCard = 20
     //cardValue = 12
+
+    //Take high value card for good starting economy or a low point first card
     if(tableCard <= 16 || (cardValue >= 11 && tableCard < 30)) { 
-        console.log('Taking card ' + tableCard + ' in first round with value: ' + cardValue)
+        console.log('Taking card' + tableCard + ' in first round with value: ' + cardValue)
         takeCard = true 
-    } //Take high value card for good starting economy or a low point first card
+    } 
 
     return takeCard
 }
