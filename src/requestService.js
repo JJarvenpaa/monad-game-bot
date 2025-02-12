@@ -1,27 +1,19 @@
 import fetch from 'node-fetch';
 
-async function createGameSession()  {
-    //TODO: make a specific error
+export default async function sendRequest(url = 'https://koodipahkina.monad.fi/api/game', body = undefined, method = 'POST') {
+    //TODO: how to point process.env to get .env from root
     if(process.env.TOKEN == undefined) throw new Error("No token found, remember to add it to .env file");
     
-    const response = await fetch('https://koodipahkina.monad.fi/api/game', {
-        method: 'POST',
+    const response = await fetch(url, {
+        method: method,
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + process.env.TOKEN,
         },
+        body: body,
     });
     //TODO: error handling
     const data = await response.json()
 
     return data
 }
-
-async function startGame() {
-    let gameData = await createGameSession()
-    console.log(gameData.gameId)
-    console.log(gameData.status)
-
-}
-
-startGame()
