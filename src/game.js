@@ -36,13 +36,14 @@ async function playTurn(gameData, gameId) {
     let cardsArray = player.cards
     let tableCard = gameData.status.card
     let cardsLeft = gameData.status.cardsLeft
-    
 
-    let currentWinner = getCurrentWinner(gameData.status.players)
-    //Previous game was 39
-    //Next game is 42
-    //We can't track previous game in game order because the gamelisting site has a bug that makes the games show in different order than games played
-    //Take a screenshot every time to find out the latest game...
+    //Simulate probability chances. example: 0.45 = 55%
+    const highValueCardProb = 0.45 
+    const lowCardProb = 0.3
+    const highCardProb = 0.45
+    
+    //let currentWinner = getCurrentWinner(gameData.status.players)
+    
     if(money == 0) {
         console.log('Money 0, have to take card : ' + tableCard + ' of value: ' + cardValue)
         takeCard = true;
@@ -54,11 +55,11 @@ async function playTurn(gameData, gameId) {
     } else if(cardValue >= 11 && tableCard < 30) {
         //give us good money buffer
         const randNum = getRandomNum() 
-        if(randNum > 0.4) { // Simulate 60% chance of taking a card
+        if(randNum > highValueCardProb) {
             takeCard = true 
-            console.log('Taking high value card : ' + tableCard + ' with randNum > 0.4 : ' + randNum + ' And value of : ' + cardValue)
+            console.log('Taking high value card : ' + tableCard + ' with randNum > ' + highValueCardProb + ' And value of : ' + cardValue)
         }
-        
+
     } else if(isSetCard(cardsArray, tableCard) && cardValue >= 1 && tableCard < 30) {
         console.log('Taking a set card : ' + tableCard + ' with value: ' + cardValue)
         takeCard = true
@@ -78,17 +79,17 @@ async function playTurn(gameData, gameId) {
 
     }
     */ 
-    //TODO: are we still getting too poor?
+    
     else if(money <= 10 && cardValue >= 3) {
         const randNum = getRandomNum() 
-        if(tableCard <= 16 && randNum > 0.3) { //Simulate 70% chance of taking card
-            console.log('Taking card : ' + tableCard + ' with randNum > 0.3 : ' + randNum + ' And value of : ' + cardValue)
+        if(tableCard <= 16 && randNum > lowCardProb) {
+            console.log('Taking card : ' + tableCard + ' with randNum > ' + lowCardProb + ' And value of : ' + cardValue)
             takeCard = true  
 
-        } else if(tableCard <= 25 && randNum > 0.5) { 
-            console.log('Taking card : ' + tableCard + ' with randNum > 0.5 : ' + randNum + ' And value of : ' + cardValue)
+        } else if(tableCard < 30 && randNum > highCardProb) { 
+            console.log('Taking card : ' + tableCard + ' with randNum > ' + highCardProb + ' And value of : ' + cardValue)
             takeCard = true 
-        } //Simulate 50% chance of taking card 
+        }
     }
 
     //Send action request to API
@@ -208,4 +209,5 @@ for(let i = 0; i < playCount; i++) {
 
     console.log('Game number ' + i + ' ended')
     console.log('-----------------')
+    await sleep(1000)
 }
