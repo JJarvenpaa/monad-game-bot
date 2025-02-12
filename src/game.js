@@ -51,10 +51,14 @@ async function playTurn(gameData, gameId) {
     else if(cardsLeft == 24 && cardValue >= 3) {
         takeCard = firstRoundPlay(tableCard, cardValue)
 
-    } else if(cardValue >= 11 && tableCard <= 16) { //give us good money buffer
-        console.log('Taking high value card : ' + tableCard + ' of value: ' + cardValue)
-        takeCard = true 
-
+    } else if(cardValue >= 11 && tableCard < 30) {
+        //give us good money buffer
+        const randNum = getRandomNum() 
+        if(randNum > 0.4) { // Simulate 60% chance of taking a card
+            takeCard = true 
+            console.log('Taking high value card : ' + tableCard + ' with randNum > 0.4 : ' + randNum + ' And value of : ' + cardValue)
+        }
+        
     } else if(isSetCard(cardsArray, tableCard) && cardValue >= 1 && tableCard < 30) {
         console.log('Taking a set card : ' + tableCard + ' with value: ' + cardValue)
         takeCard = true
@@ -189,14 +193,19 @@ const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-let gameData = await startGame()
-console.log('Start game')
-const gameId = gameData.gameId
+let playCount = 10
+for(let i = 0; i < playCount; i++) {
+    let gameData = await startGame()
+    console.log('Start game number: ' + i)
+    console.log('-----------------')
+    const gameId = gameData.gameId
 
-while(gameData.status.finished === false) {
-    await sleep(1000)
-    gameData = await playTurn(gameData, gameId)
-    //console.log(gameData)
+    while(gameData.status.finished === false) {
+        await sleep(1000)
+        gameData = await playTurn(gameData, gameId)
+        //console.log(gameData)
+    }
+
+    console.log('Game number ' + i + ' ended')
+    console.log('-----------------')
 }
-
-console.log('Game ended')
