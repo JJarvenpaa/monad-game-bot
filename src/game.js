@@ -1,25 +1,26 @@
 import sendRequest from './requestService.js';
 
 
-async function startGame() {
-    /*
-    For testing random with probability
-    let take80Counter = 0
-    let take50Counter = 0
+/*
+For testing random with probability
+let take80Counter = 0
+let take50Counter = 0
 
-    for(let i = 0; i < 10000; i++) {
-        let test = Math.random() * 100
-        let randNum = Math.ceil(test) / 100
+for(let i = 0; i < 10000; i++) {
+    let test = Math.random() * 100
+    let randNum = Math.ceil(test) / 100
 
-        if(randNum > 0.5) { 
-            take50Counter++ 
-        } 
-        
-        if(randNum > 0.2) {
-            take80Counter++
-        }
+    if(randNum > 0.5) { 
+        take50Counter++ 
+    } 
+    
+    if(randNum > 0.2) {
+        take80Counter++
     }
-    */
+}
+*/
+
+async function startGame() {
 
     let gameData = await sendRequest()
 
@@ -35,53 +36,67 @@ async function playTurn(gameData, gameId) {
     let cardsArray = player.cards
     let tableCard = gameData.status.card
     let cardsLeft = gameData.status.cardsLeft
+    
 
     let currentWinner = getCurrentWinner(gameData.status.players)
-    //Previous game was 41
+    //Previous game was 39
     //Next game is 42
     //We can't track previous game in game order because the gamelisting site has a bug that makes the games show in different order than games played
     //Take a screenshot every time to find out the latest game...
     if(money == 0) {
+        console.log('Money 0, have to take card : ' + tableCard + ' of value: ' + cardValue)
         takeCard = true;
         
     } 
     else if(cardsLeft == 24 && cardValue >= 3) {
         takeCard = firstRoundPlay(tableCard, cardValue)
 
-    } else if(cardValue >= 12 && tableCard < 12) { //Will reduce points, good to take
+    } else if(cardValue >= 11 && tableCard <= 16) { //give us good money buffer
+        console.log('Taking high value card : ' + tableCard + ' of value: ' + cardValue)
         takeCard = true 
 
-    } else if(isSetCard(cardsArray, tableCard) && cardValue >= 1) {
+    } else if(isSetCard(cardsArray, tableCard) && cardValue >= 1 && tableCard < 30) {
+        console.log('Taking a set card : ' + tableCard + ' with value: ' + cardValue)
         takeCard = true
 
-    } else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner.cards, tableCard) && cardValue >= 1) {
+    } /*else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner.cards, tableCard) && cardValue >= 1 && money >=8) {
+        //TODO: It does happen, but it seems it makes our situation worse
         const randNum = getRandomNum() 
         if(tableCard <= 16 && randNum > 0.4) { //Simulate 60% chance of taking card
+            console.log('stealing winners set with 60% chance')
             takeCard = true  
  
-        } else if(tableCard <= 25 && randNum > 0.6) { takeCard = true } //Simulate 40% chance of taking card 
+        } else if(tableCard <= 25 && randNum > 0.6) { 
+            console.log('stealing winners set with 40% chance')
+            takeCard = true 
+            
+        } //Simulate 40% chance of taking card 
 
-    } 
+    }
+    */ 
     //TODO: are we still getting too poor?
     else if(money <= 10 && cardValue >= 3) {
         const randNum = getRandomNum() 
         if(tableCard <= 16 && randNum > 0.3) { //Simulate 70% chance of taking card
-           takeCard = true  
+            console.log('Taking card : ' + tableCard + ' with randNum > 0.3 : ' + randNum + ' And value of : ' + cardValue)
+            takeCard = true  
 
-        } else if(tableCard <= 25 && randNum > 0.5) { takeCard = true } //Simulate 50% chance of taking card 
+        } else if(tableCard <= 25 && randNum > 0.5) { 
+            console.log('Taking card : ' + tableCard + ' with randNum > 0.5 : ' + randNum + ' And value of : ' + cardValue)
+            takeCard = true 
+        } //Simulate 50% chance of taking card 
     }
 
     //Send action request to API
     let requestBody = JSON.stringify({ takeCard: takeCard })
     gameData = await sendRequest('https://koodipahkina.monad.fi/api/game/' + gameId + '/action', requestBody )
-    console.log(gameData.status)
+    //console.log(gameData.status)
 
     return gameData
 }
 
 const getCurrentWinner = (players) => {
     let pointsMap = getPoints(players)
-    console.log(pointsMap)
 
     //TODO: What to do when many players have lowest points -> Then we can check which of them has most money?
     return [...pointsMap.entries()].reduce((minPointsPlayer, currentPlayer) => {
@@ -132,7 +147,10 @@ const firstRoundPlay = (tableCard, cardValue) => {
     //For testing only
     //tableCard = 20
     //cardValue = 12
-    if(tableCard <= 16 || cardValue >= 11) { takeCard = true } //Take high value card for good starting economy or a low point first card
+    if(tableCard <= 16 || cardValue >= 11) { 
+        console.log('Taking card ' + tableCard + ' in first round with value: ' + cardValue)
+        takeCard = true 
+    } //Take high value card for good starting economy or a low point first card
 
     return takeCard
 }
@@ -172,10 +190,13 @@ const sleep = (ms) => {
 }
 
 let gameData = await startGame()
+console.log('Start game')
 const gameId = gameData.gameId
 
 while(gameData.status.finished === false) {
     await sleep(1000)
     gameData = await playTurn(gameData, gameId)
-    console.log(gameData)
+    //console.log(gameData)
 }
+
+console.log('Game ended')
