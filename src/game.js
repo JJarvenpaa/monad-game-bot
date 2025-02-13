@@ -20,7 +20,6 @@ for(let i = 0; i < 10000; i++) {
 */
 
 
-
 async function playTurn(gameData, gameId) {
     let takeCard = false
     let player = gameData.status.players.find(({ name }) => name == 'JJarvenpaa')
@@ -103,11 +102,9 @@ const getCurrentWinner = (players) => {
     return [...pointsMap.entries()].reduce((minPointsPlayer, currentPlayer) => {
         const [playerObj, points] = currentPlayer;
 
-        if (points < minPointsPlayer[1]) {
-            return currentPlayer;
-        } else {
-            return minPointsPlayer;
-        }
+        if (points < minPointsPlayer[1]) return currentPlayer;
+        
+        return minPointsPlayer;
     })[0]
 }
 
@@ -137,9 +134,9 @@ const getPoints = (players, pointsMap = new Map()) => {
 const stealSetCard = (winnnerCardsArr, tableCard) => {
     if(isSetCard(winnnerCardsArr, tableCard)) {
          return true 
-    } else {
-        return false
-    }
+    } 
+        
+    return false
 }
 
 const firstRoundPlay = (tableCard, cardValue) => {
@@ -160,7 +157,7 @@ const firstRoundPlay = (tableCard, cardValue) => {
 
 
 const isSetCard = (cardsArray, tableCard) =>  {
-    if(cardsArray.length === 0) { return false } 
+    if(cardsArray.length === 0) return false 
     //For testing only 
     //cardsArray = [[25], [1, 2], [30]]
     //tableCard = 3
@@ -178,10 +175,9 @@ const isSetCard = (cardsArray, tableCard) =>  {
         }
     }
 
-    if(cardsArray.some(getSetCard)) { 
-        return true 
-
-    } else { return false }
+    if(cardsArray.some(getSetCard)) return true 
+    
+    return false 
 }
 
 const getRandomNum = () => {
@@ -202,7 +198,6 @@ for(let i = 0; i < playCount; i++) {
     while(gameData.status.finished === false) {
         await sleep(1000)
         gameData = await playTurn(gameData, gameId)
-        //console.log(gameData)
     }
 
     console.log('Game number ' + i + ' ended')
