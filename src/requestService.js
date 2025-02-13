@@ -11,11 +11,9 @@ export default async function sendRequest(url = 'https://koodipahkina.monad.fi/a
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + process.env.TOKEN,
             },
-            //signal: AbortSignal.timeout(5000), 
-            //TODO: timeout 5s is too low
+            signal: AbortSignal.timeout(10000), 
             body: body,
         });
-        //TODO: error handling
         const data = await response.json()
         //Handle API specific errors
         if(data.message) {
@@ -33,7 +31,7 @@ export default async function sendRequest(url = 'https://koodipahkina.monad.fi/a
                 throw new Error('Request timeout')
 
             case 'AbortError':
-                throw new Error('Fetch aborted by user action')
+                throw new Error('Fetch aborted by user action or timeout')
             
             case 'TypeError':
                 throw new Error('TypeError encountered')
