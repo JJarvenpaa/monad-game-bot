@@ -15,7 +15,6 @@ export default async function sendRequestWithRetry(url = 'https://koodipahkina.m
 }
 
 async function sendRequest(url, body, method) {
-    //TODO: how to point process.env to get .env from root
     if(process.env.TOKEN == undefined) throw new Error("No token found, remember to add it to .env file");
     
     try {
