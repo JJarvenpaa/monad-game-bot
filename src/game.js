@@ -1,4 +1,4 @@
-import sendRequest from './requestService.js';
+import sendRequestWithRetry from './requestService.js';
 
 
 /*
@@ -91,7 +91,7 @@ async function playTurn(gameData, gameId) {
 
     //Send action request to API
     let requestBody = JSON.stringify({ takeCard: takeCard })
-    gameData = await sendRequest('https://koodipahkina.monad.fi/api/game/' + gameId + '/action', requestBody )
+    gameData = await sendRequestWithRetry('https://koodipahkina.monad.fi/api/game/' + gameId + '/action', requestBody )
 
     return gameData
 }
@@ -194,7 +194,7 @@ const sleep = (ms) => {
 
 let playCount = 1
 for(let i = 0; i < playCount; i++) {
-    let gameData = await sendRequest()
+    let gameData = await sendRequestWithRetry()
     console.log('Start game number: ' + i)
     console.log('-----------------')
     const gameId = gameData.gameId
