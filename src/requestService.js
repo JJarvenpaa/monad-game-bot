@@ -11,18 +11,18 @@ export default async function sendRequest(url = 'https://koodipahkina.monad.fi/a
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + process.env.TOKEN,
             },
-            signal: AbortSignal.timeout(5000), 
+            //signal: AbortSignal.timeout(5000), 
+            //TODO: timeout 5s is too low
             body: body,
         });
         //TODO: error handling
         const data = await response.json()
         //Handle API specific errors
-        if(data.message != undefined) {
+        if(data.message) {
             let error = data.message
-            if(data.summary != undefined && data.summary != '') error = data.summary
+            if(data.summary) error = data.summary
+
             throw new Error('API returned error with message: ' + error)
-            //TODO: handle game update without body
-            //TODO: handle game update with wrong data
         } 
 
         return data
