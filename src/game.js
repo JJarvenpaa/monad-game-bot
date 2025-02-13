@@ -49,7 +49,7 @@ async function playTurn(gameData, gameId) {
         const randNum = getRandomNum() 
         if(randNum > highValueCardProb) {
             takeCard = true 
-            console.log('Taking high value card  ' + tableCard + ' with randNum > ' + highValueCardProb + ' And value of ' + cardValue)
+            console.log('Taking high value card ' + tableCard + ' with randNum > ' + highValueCardProb + ' And value of ' + cardValue)
         }
 
     } else if(isSetCard(cardsArray, tableCard) && cardValue >= 1 && tableCard < 30) {
@@ -148,7 +148,7 @@ const firstRoundPlay = (tableCard, cardValue) => {
 
     //Take high value card for good starting economy or a low point first card
     if(tableCard <= 16 || (cardValue >= 11 && tableCard < 30)) { 
-        console.log('Taking card' + tableCard + ' in first round with value: ' + cardValue)
+        console.log('Taking card ' + tableCard + ' in first round with value: ' + cardValue)
         takeCard = true 
     } 
 
