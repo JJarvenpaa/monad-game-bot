@@ -16,22 +16,14 @@ export default async function sendRequest(url = 'https://koodipahkina.monad.fi/a
         });
         //TODO: error handling
         const data = await response.json()
+        //Handle API specific errors
         if(data.message != undefined) {
-            throw new Error('API returned error with message: ' + data.message)
-            //Handle API specific errors
-            //TODO: handle authorization missing
-            //TODO: handle wrong authorization
+            let error = data.message
+            if(data.summary != undefined && data.summary != '') error = data.summary
+            throw new Error('API returned error with message: ' + error)
             //TODO: handle game update without body
             //TODO: handle game update with wrong data
         } 
-        if(data.errors != undefined && data.errors.length > 0) {
-            let errors = ''
-            for(const error in data.errors) {
-                errors += error
-            }
-
-            throw new Error('API returned errors: ' + errors)
-        }
 
         return data
     
@@ -47,7 +39,7 @@ export default async function sendRequest(url = 'https://koodipahkina.monad.fi/a
                 throw new Error('TypeError encountered')
             
             default:
-                throw new Error(`type: ${err.name}, message: ${err.message}`)
+                throw new Error(`Error in fetch request, type: ${err.name}, message: ${err.message}`)
         }
     }
 }
