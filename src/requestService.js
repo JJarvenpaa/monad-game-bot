@@ -4,16 +4,40 @@ export default async function sendRequest(url = 'https://koodipahkina.monad.fi/a
     //TODO: how to point process.env to get .env from root
     if(process.env.TOKEN == undefined) throw new Error("No token found, remember to add it to .env file");
     
-    const response = await fetch(url, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + process.env.TOKEN,
-        },
-        body: body,
-    });
-    //TODO: error handling
-    const data = await response.json()
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + process.env.TOKEN,
+            },
+            signal: AbortSignal.timeout(10000), 
+            body: body,
+        });
+        const data = await response.json()
+        //Handle API specific errors
+        if(data.message) {
+            let error = data.message
+            if(data.summary) error = data.summary
 
-    return data
+            throw new Error('API returned error with message: ' + error)
+        } 
+
+        return data
+    
+    } catch(err) {
+        switch(err.name) {
+            case 'TimeoutError':
+                throw new Error('Request timeout')
+
+            case 'AbortError':
+                throw new Error('Fetch aborted by user action or timeout')
+            
+            case 'TypeError':
+                throw new Error('TypeError encountered')
+            
+            default:
+                throw new Error(`Error in fetch request, type: ${err.name}, message: ${err.message}`)
+        }
+    }
 }

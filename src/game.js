@@ -19,12 +19,6 @@ for(let i = 0; i < 10000; i++) {
 }
 */
 
-async function startGame() {
-
-    let gameData = await sendRequest()
-
-    return gameData
-}
 
 
 async function playTurn(gameData, gameId) {
@@ -65,9 +59,10 @@ async function playTurn(gameData, gameId) {
 
     } 
 
-    /* Leave it for now, but it makes our situation worse like this. Maybe do something else with regarding the current winner?
+    /* 
+    Idea was to steal the lower scoring players potential set cards
+    Leave it for now, but it makes our situation worse like this. Maybe do something else with regarding the current winner?
     else if(currentWinner.name != 'JJarvenpaa' && stealSetCard(currentWinner.cards, tableCard) && cardValue >= 1 && money >=8) {
-        //TODO It does happen, but it seems it makes our situation worse
         const randNum = getRandomNum() 
         if(tableCard <= 16 && randNum > 0.4) { //Simulate 60% chance of taking card           
             console.log('stealing winners set with 60% chance')
@@ -197,9 +192,9 @@ const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-let playCount = 10
+let playCount = 1
 for(let i = 0; i < playCount; i++) {
-    let gameData = await startGame()
+    let gameData = await sendRequest()
     console.log('Start game number: ' + i)
     console.log('-----------------')
     const gameId = gameData.gameId
