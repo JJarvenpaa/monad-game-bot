@@ -4,13 +4,12 @@ Monad Rekrypähkinä 2024
 
 ## Running game
 
-Before starting a game remember to create a .env file with TOKEN='token' to /src folder
+Before starting a game remember to create a .env file with TOKEN='token' to root
 
 Run node with .env 
 
 ```bash
-cd src
-node --env-file-if-exists='.env' game.js
+node --env-file=.env ./src/game.js
 ```
 
 ## Game explained
@@ -69,3 +68,6 @@ To be ready for submission, your bot must meet the following requirements:
     Difference < 24: Average difference to opponents' scores is less than 24 points.
 
 Following best practices and clean implementation are more important than the bot's performance. Once the bot meets the requirements, its performance is considered sufficient.
+
+## Results 
+My best bot averaged 46.0 points in 100 games when opponents averaged 45.3. Difference is 0.7
