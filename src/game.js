@@ -19,6 +19,7 @@ for(let i = 0; i < 10000; i++) {
 }
 */
 
+/*
 //This function is used in finding out who to steal set cards from, not used currently in code
 const getCurrentWinner = (players) => {
     let pointsMap = getPoints(players);
@@ -32,7 +33,9 @@ const getCurrentWinner = (players) => {
         return minPointsPlayer;
     })[0]
 }
+*/
 
+/*
 //Calculate players current points and return them to getCurrentWinner()
 const getPoints = (players, pointsMap = new Map()) => {
     for(const p of players) {
@@ -55,7 +58,9 @@ const getPoints = (players, pointsMap = new Map()) => {
 
     return pointsMap;
 }
+*/
 
+/*
 //This is used to steal a set card from current winner, not used currently in code
 const stealSetCard = (winnnerCardsArr, tableCard) => {
     if(isSetCard(winnnerCardsArr, tableCard)) {
@@ -64,6 +69,7 @@ const stealSetCard = (winnnerCardsArr, tableCard) => {
         
     return false;
 }
+*/
 
 /**
  * During a turn our bot decides if to take the card or not
