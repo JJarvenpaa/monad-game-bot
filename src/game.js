@@ -19,6 +19,51 @@ for(let i = 0; i < 10000; i++) {
 }
 */
 
+//This function is used in finding out who to steal set cards from, not used currently in code
+const getCurrentWinner = (players) => {
+    let pointsMap = getPoints(players);
+
+    //TODO: What to do when many players have lowest points -> Then we can check which of them has most money? Also refactor this return, it's a bit confusing
+    return [...pointsMap.entries()].reduce((minPointsPlayer, currentPlayer) => {
+        const [playerObj, points] = currentPlayer;
+
+        if (points < minPointsPlayer[1]) return currentPlayer;
+        
+        return minPointsPlayer;
+    })[0]
+}
+
+//Calculate players current points and return them to getCurrentWinner()
+const getPoints = (players, pointsMap = new Map()) => {
+    for(const p of players) {
+        let playerPoints = 0;
+        let playerCardsArr = p.cards;
+
+        if(playerCardsArr.length == 0) {
+            playerPoints -= p.money;
+            pointsMap.set(p, playerPoints);
+            continue;
+        }
+
+        for(const card of playerCardsArr) {
+            playerPoints += card[0];
+        }
+
+        playerPoints -= p.money; 
+        pointsMap.set(p, playerPoints);
+    }
+
+    return pointsMap;
+}
+
+//This is used to steal a set card from current winner, not used currently in code
+const stealSetCard = (winnnerCardsArr, tableCard) => {
+    if(isSetCard(winnnerCardsArr, tableCard)) {
+         return true; 
+    } 
+        
+    return false;
+}
 
 async function playTurn(gameData, gameId) {
     let takeCard = false;
@@ -94,50 +139,6 @@ async function playTurn(gameData, gameId) {
     return gameData;
 }
 
-const getCurrentWinner = (players) => {
-    let pointsMap = getPoints(players);
-
-    //TODO: What to do when many players have lowest points -> Then we can check which of them has most money?
-    return [...pointsMap.entries()].reduce((minPointsPlayer, currentPlayer) => {
-        const [playerObj, points] = currentPlayer;
-
-        if (points < minPointsPlayer[1]) return currentPlayer;
-        
-        return minPointsPlayer;
-    })[0]
-}
-
-const getPoints = (players, pointsMap = new Map()) => {
-    //Calculate all player points
-    for(const p of players) {
-        let playerPoints = 0;
-        let playerCardsArr = p.cards;
-
-        if(playerCardsArr.length == 0) {
-            playerPoints -= p.money;
-            pointsMap.set(p, playerPoints);
-            continue;
-        }
-
-        for(const card of playerCardsArr) {
-            playerPoints += card[0];
-        }
-
-        playerPoints -= p.money; 
-        pointsMap.set(p, playerPoints);
-    }
-
-    return pointsMap;
-}
-
-const stealSetCard = (winnnerCardsArr, tableCard) => {
-    if(isSetCard(winnnerCardsArr, tableCard)) {
-         return true; 
-    } 
-        
-    return false;
-}
-
 const firstRoundPlay = (tableCard, cardValue) => {
     let takeCard = false;
 
@@ -153,7 +154,6 @@ const firstRoundPlay = (tableCard, cardValue) => {
 
     return takeCard;
 }
-
 
 const isSetCard = (cardsArray, tableCard) =>  {
     if(cardsArray.length === 0) return false; 
