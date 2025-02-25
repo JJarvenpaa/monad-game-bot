@@ -65,6 +65,17 @@ const stealSetCard = (winnnerCardsArr, tableCard) => {
     return false;
 }
 
+/**
+ * During a turn our bot decides if to take the card or not
+ * Our bot heavily relies on taking set cards
+ * When money is running out consider taking a card based on probabilities, smaller cards are taken more often
+ * Take high value card with a high probability for money buffer
+ * Send the decision to the API
+ * 
+ * @param {*} gameData All the current game data from API
+ * @param {string} gameId api returns this after game is created
+ * @returns {*} gameData after our turn
+ */
 async function playTurn(gameData, gameId) {
     let takeCard = false;
     let player = gameData.status.players.find(({ name }) => name == 'JJarvenpaa');
