@@ -15,7 +15,7 @@ export default async function sendRequestWithRetry(url = 'https://koodipahkina.m
 }
 
 async function sendRequest(url, body, method) {
-    if(process.env.TOKEN == undefined) throw new Error("No token found, remember to add it to .env file");
+    if(process.env.TOKEN == undefined) throw new Error('No token found, remember to add it to .env file');
     
     try {
         const response = await fetch(url, {
