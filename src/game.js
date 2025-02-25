@@ -102,8 +102,7 @@ async function playTurn(gameData, gameId) {
         console.log(`Money 0, have to take card ${tableCard} of value ${cardValue}`);
         takeCard = true;
         
-    } 
-    else if(cardsLeft == 24 && cardValue >= 3) {
+    } else if(cardsLeft == 24 && cardValue >= 3) {
         takeCard = firstRoundPlay(tableCard, cardValue);
 
     } else if(cardValue >= 11 && tableCard < 30) {
