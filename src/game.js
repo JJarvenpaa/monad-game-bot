@@ -37,7 +37,7 @@ async function playTurn(gameData, gameId) {
     //let currentWinner = getCurrentWinner(gameData.status.players);
     
     if(money == 0) {
-        console.log('Money 0, have to take card ' + tableCard + ' of value ' + cardValue);
+        console.log(`Money 0, have to take card ${tableCard} of value ${cardValue}`);
         takeCard = true;
         
     } 
@@ -49,11 +49,11 @@ async function playTurn(gameData, gameId) {
         const randNum = getRandomNum(); 
         if(randNum > highValueCardProb) {
             takeCard = true; 
-            console.log('Taking high value card ' + tableCard + ' with randNum > ' + highValueCardProb + ' And value of ' + cardValue);
+            console.log(`Taking high value card ${tableCard} with random number > ${highValueCardProb} And value of ${cardValue}`);
         }
 
     } else if(isSetCard(cardsArray, tableCard) && cardValue >= 1 && tableCard < 30) {
-        console.log('Taking a set card ' + tableCard + ' with value ' + cardValue);
+        console.log(`Taking a set card ${tableCard} with value: ${cardValue}`);
         takeCard = true;
     } 
 
@@ -78,11 +78,11 @@ async function playTurn(gameData, gameId) {
     else if(money <= 10 && cardValue >= 3) {
         const randNum = getRandomNum(); 
         if(tableCard <= 16 && randNum > lowCardProb) {
-            console.log('Taking card ' + tableCard + ' with randNum > ' + lowCardProb + ' And value of ' + cardValue);
+            console.log(`Taking card ${tableCard} with random number > ${lowCardProb} And value of ${cardValue}`);
             takeCard = true;  
 
         } else if(tableCard < 30 && randNum > highCardProb) { 
-            console.log('Taking card ' + tableCard + ' with randNum > ' + highCardProb + ' And value of ' + cardValue);
+            console.log(`Taking card ${tableCard} with random number > ${highCardProb} And value of ${cardValue}`);
             takeCard = true; 
         }
     }
@@ -147,7 +147,7 @@ const firstRoundPlay = (tableCard, cardValue) => {
 
     //Take high value card for good starting economy or a low point first card
     if(tableCard <= 16 || (cardValue >= 11 && tableCard < 30)) { 
-        console.log('Taking card ' + tableCard + ' in first round with value: ' + cardValue);
+        console.log(`Taking card ${tableCard} in first round with value ${cardValue}`);
         takeCard = true; 
     } 
 
