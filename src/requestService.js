@@ -15,7 +15,7 @@ export default async function sendRequestWithRetry(url = 'https://koodipahkina.m
 }
 
 async function sendRequest(url, body, method) {
-    if(process.env.TOKEN == undefined) throw new Error("No token found, remember to add it to .env file");
+    if(process.env.TOKEN == undefined) throw new Error('No token found, remember to add it to .env file');
     
     try {
         const response = await fetch(url, {
@@ -27,30 +27,30 @@ async function sendRequest(url, body, method) {
             signal: AbortSignal.timeout(10000), 
             body: body,
         });
-        const data = await response.json()
+        const data = await response.json();
         //Handle API specific errors
         if(data.message) {
-            let error = data.message
-            if(data.summary) error = data.summary
+            let error = data.message;
+            if(data.summary) error = data.summary;
 
-            throw new Error('API returned error with message: ' + error)
+            throw new Error('API returned error with message: ' + error);
         } 
 
-        return data
+        return data;
     
     } catch(err) {
         switch(err.name) {
             case 'TimeoutError':
-                throw new Error('Request timeout')
+                throw new Error('Request timeout');
 
             case 'AbortError':
-                throw new Error('Fetch aborted by user action or timeout')
+                throw new Error('Fetch aborted by user action or timeout');
             
             case 'TypeError':
-                throw new Error('TypeError encountered')
+                throw new Error('TypeError encountered');
             
             default:
-                throw new Error(`Error in fetch request, type: ${err.name}, message: ${err.message}`)
+                throw new Error(`Error in fetch request, type: ${err.name}, message: ${err.message}`);
         }
     }
 }
